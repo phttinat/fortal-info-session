@@ -130,6 +130,11 @@
   .video-wrap{margin:6px auto 0;width:100%;max-width:1180px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#000;box-shadow:0 30px 80px rgba(0,0,0,.55)}
   .video-wrap video{display:block;width:100%;height:auto;max-height:72vh;background:#000}
   .video-cap{margin-top:16px;color:var(--ink-dim);font-size:clamp(13px,1.4vw,18px)}
+  .video-panel{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#000;box-shadow:0 20px 50px rgba(0,0,0,.5);aspect-ratio:16/9;width:100%}
+  .video-panel video{display:block;width:100%;height:100%;object-fit:cover}
+  .stat-row.compact{gap:min(3.4vw,38px)}
+  .stat-row.compact .stat b{font-size:clamp(22px,2.6vw,34px)}
+  .stat-row.compact .stat span{font-size:clamp(10px,1vw,13px)}
 
   /* Jobs slide */
   .job h3{font-size:clamp(19px,2vw,27px);margin:2px 0 10px;color:var(--ink)}
@@ -265,10 +270,15 @@
           <span class="pill"><i></i>Light Step</span>
         </div>
       </div>
-      <div class="stat-row" style="flex-direction:column;gap:26px;margin-top:0">
-        <div class="stat"><b>3&times;6 m</b><span data-k="s4s1">พื้นสนาม LED</span></div>
-        <div class="stat"><b>200</b><span data-k="s4s2">ช่องที่เล่นได้</span></div>
-        <div class="stat"><b data-k="s4b3">~90 วิ</b><span data-k="s4s3">ต่อหนึ่งเกม</span></div>
+      <div style="display:flex;flex-direction:column;gap:22px;min-width:0">
+        <div class="video-panel">
+          <video src="assets/video/nia-fortal.mp4" autoplay muted loop playsinline preload="metadata"></video>
+        </div>
+        <div class="stat-row compact" style="margin-top:0">
+          <div class="stat"><b>3&times;6 m</b><span data-k="s4s1">พื้นสนาม LED</span></div>
+          <div class="stat"><b>200</b><span data-k="s4s2">ช่องที่เล่นได้</span></div>
+          <div class="stat"><b data-k="s4b3">~90 วิ</b><span data-k="s4s3">ต่อหนึ่งเกม</span></div>
+        </div>
       </div>
     </div>
     <div class="notes" data-note data-k="s4n"><b>บทพูด (~1.5 นาที)</b>
@@ -387,11 +397,11 @@
   <section class="slide" style="--accent:var(--amber)">
     <div class="kicker" data-k="svk">Goo Goo Clash &middot; คลิปงานจริง</div>
     <div class="video-wrap">
-      <video src="assets/video/googoo-event.mp4" autoplay muted loop playsinline controls preload="metadata"></video>
+      <video src="assets/video/googoo-event.mp4" autoplay loop playsinline controls preload="metadata"></video>
     </div>
     <p class="video-cap" data-k="svc">บรรยากาศจริงตอนคนลงไปเล่นในสนาม นี่คือสิ่งที่เราสร้าง</p>
     <div class="notes" data-note data-k="svn"><b>บทพูด (~1 นาที)</b>
-      เปิดคลิปให้ดูบรรยากาศจริงตอนคนลงไปเล่น. กดที่คลิปเพื่อเปิดเสียงได้. ปล่อยให้ภาพเล่าเรื่องสักครู่ แล้วค่อยไปต่อเรื่องตำแหน่งที่เราเปิดรับ.
+      เปิดคลิปให้ดูบรรยากาศจริงตอนคนลงไปเล่น คลิปเล่นพร้อมเสียงเองตอนเลื่อนมาถึง (ถ้าไม่ดังกดเล่นที่คลิปได้). ปล่อยให้ภาพเล่าเรื่องสักครู่ แล้วค่อยไปต่อเรื่องตำแหน่งฝึกงานที่เราเปิดรับ.
     </div>
   </section>
 
@@ -524,7 +534,7 @@
     s11n: `<b>(~1.5 min)</b> So, why us. One, your work is tangible, people walk up and enjoy it right in front of you, not code lost in a server. Two, cross-disciplinary, games, hardware, XR and AI together. Three, our own IP, you build for real, not work-for-hire. Four, genuinely cutting-edge tech, not toys.`,
     svk: `Goo Goo Clash &middot; Live Event`,
     svc: `The real energy when people step onto the field. This is what we build.`,
-    svn: `<b>(~1 min)</b> Play the clip to show the real energy when people get on the field. Tap the video to turn on sound. Let the footage talk for a moment, then move on to the roles we're hiring for.`,
+    svn: `<b>(~1 min)</b> Play the clip to show the real energy when people get on the field. It plays with sound when you land on this slide (click the clip if it doesn't). Let the footage talk for a moment, then move on to the intern tracks we're looking for.`,
     sjk: `Internships &middot; Open Tracks`,
     sjh: `We're Looking for <span class="hl">2 Intern Tracks</span>`,
     sj1r: `Test games, software and hardware (manual &amp; exploratory), write reproducible bug reports, and design thorough test cases`,
