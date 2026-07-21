@@ -289,9 +289,16 @@
   <!-- GOO GOO CLASH -->
   <section class="slide" style="--accent:var(--amber);--bg-img:url('assets/goo/hero-art.jpg')">
     <div class="kicker">Goo Goo Clash</div>
-    <h2 data-k="s5h">แข่งวิ่งใน <span class="hl">Mixed Reality</span></h2>
-    <p class="lead mt" data-k="s5l">ใส่แว่น <strong>Meta Quest</strong> วิ่งในสนามจริง คุมตัวละครสไลม์ผลไม้ นำทัพมินเนี่ยน สูงสุด 4 คน พร้อมมุมมองผู้ชมสดๆ</p>
-    <div class="grid g4">
+    <div style="display:grid;grid-template-columns:1.15fr 0.85fr;gap:min(4vw,50px);align-items:center;max-width:none">
+      <div>
+        <h2 data-k="s5h">แข่งวิ่งใน <span class="hl">Mixed Reality</span></h2>
+        <p class="lead mt" data-k="s5l">ใส่แว่น <strong>Meta Quest</strong> วิ่งในสนามจริง คุมตัวละครสไลม์ผลไม้ นำทัพมินเนี่ยน สูงสุด 4 คน พร้อมมุมมองผู้ชมสดๆ</p>
+      </div>
+      <div class="video-panel">
+        <video src="assets/video/googoo-clash-clip.mp4" autoplay muted loop playsinline preload="metadata"></video>
+      </div>
+    </div>
+    <div class="grid g4" style="margin-top:30px">
       <div class="card"><span class="tag">Tech</span><h3>Colocation</h3><p data-k="s5c1p">ซิงค์ผู้เล่นหลายคนให้อยู่ในโลกเสมือนเดียวกันแบบเป๊ะๆ</p></div>
       <div class="card"><span class="tag">Players</span><h3 data-k="s5c2h">สูงสุด 4 คน</h3><p data-k="s5c2p">แข่งกันในสนามจริง แบบเรียลไทม์</p></div>
       <div class="card"><span class="tag">Cast</span><h3 data-k="s5c3h">12 ตระกูล</h3><p data-k="s5c3p">GooGoo Master 4 ภูมิภาค แดง เหลือง น้ำเงิน เขียว</p></div>
@@ -305,17 +312,20 @@
   <!-- UNDYING SQUAD -->
   <section class="slide" style="--accent:var(--magenta);--bg-img:url('assets/undying/hero-art.jpg')">
     <div class="kicker">Undying Squad</div>
-    <div class="two-col" style="display:grid;grid-template-columns:1.05fr .95fr;gap:min(6vw,80px);align-items:center">
+    <div class="two-col" style="display:grid;grid-template-columns:1fr 1.05fr;gap:min(4vw,50px);align-items:center;max-width:none">
       <div>
         <h2 data-k="s6h">Co-op Survivor<br><span class="hl">Shooter</span> ใน MR</h2>
         <p class="lead mt" data-k="s6l">1 ถึง 4 คน เดินในพื้นที่จริง ยิงสู้ศัตรูเป็นระลอก<br>สายเอาตัวรอด roguelike อาร์ตแบบ voxel</p>
+        <ul class="list" style="margin-top:22px;display:flex;flex-direction:column;gap:12px">
+          <li data-k="s6li1"><b>Gun mount</b> ฐานยึดปืนของจริง</li>
+          <li data-k="s6li2"><b>VR Bow</b> ธนูที่รู้สึกเหมือนน้าวจริง</li>
+          <li data-k="s6li3"><b>Haptic suit</b> ชุดที่สั่นตามการโดนโจมตี</li>
+          <li data-k="s6li4"><b>Roguelike</b> เก่งขึ้นทุกรอบ ไม่ซ้ำเดิม</li>
+        </ul>
       </div>
-      <ul class="list" style="margin-top:0;display:flex;flex-direction:column;gap:16px">
-        <li data-k="s6li1"><b>Gun mount</b> ฐานยึดปืนของจริง</li>
-        <li data-k="s6li2"><b>VR Bow</b> ธนูที่รู้สึกเหมือนน้าวจริง</li>
-        <li data-k="s6li3"><b>Haptic suit</b> ชุดที่สั่นตามการโดนโจมตี</li>
-        <li data-k="s6li4"><b>Roguelike</b> เก่งขึ้นทุกรอบ ไม่ซ้ำเดิม</li>
-      </ul>
+      <div class="video-panel">
+        <video src="assets/video/zombie-clip.mp4" autoplay muted loop playsinline preload="metadata"></video>
+      </div>
     </div>
     <div class="notes" data-note data-k="s6n"><b>บทพูด (~1.5 นาที)</b>
       ตัวที่สามคือ Undying Squad. เป็นเกมยิงเอาตัวรอดแบบร่วมมือ 1 ถึง 4 คน. จุดที่น่าสนใจสำหรับสายฮาร์ดแวร์คือ gear เฉพาะ ทั้งฐานยึดปืน ธนู VR และชุด haptic ที่สั่นตอนโดนยิง. นี่คืองานที่ software กับ hardware ต้องคุยกัน. อาร์ตเป็น voxel เท่ๆ เล่นแบบ roguelike ทุกรอบไม่เหมือนเดิม.
