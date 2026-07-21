@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fortal Interactive · Company Info Session</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  :root{
+    --bg:#07070d;
+    --bg2:#0d0d18;
+    --ink:#f4f5fb;
+    --ink-dim:#a3a6bd;
+    --ink-faint:#6a6d86;
+    --line:rgba(255,255,255,.10);
+    --cyan:#22e3ff;
+    --magenta:#ff2e97;
+    --lime:#c6ff3d;
+    --amber:#ffb020;
+    --violet:#9a6bff;
+    --accent:var(--cyan);
+    --font:'Prompt','Leelawadee UI','Segoe UI',system-ui,sans-serif;
+    --mono:'Space Grotesk','Prompt',system-ui,sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--font);
+    background:var(--bg);
+    color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .deck{position:fixed;inset:0}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:min(6.5vw,84px) min(8vw,120px);
+    opacity:0;visibility:hidden;
+    transform:translateY(24px) scale(.995);
+    transition:opacity .5s ease, transform .5s ease, visibility .5s;
+    background:
+      linear-gradient(90deg, rgba(7,7,13,.95) 0%, rgba(7,7,13,.74) 48%, rgba(7,7,13,.44) 100%),
+      radial-gradient(1100px 700px at 88% 6%, rgba(34,227,255,.10), transparent 62%),
+      radial-gradient(900px 700px at 4% 108%, rgba(255,46,151,.09), transparent 60%),
+      var(--bg-img, none) center/cover no-repeat,
+      linear-gradient(180deg,var(--bg),var(--bg2));
+  }
+  .slide.active{opacity:1;visibility:visible;transform:none;z-index:2}
+  .slide.prev{transform:translateY(-24px) scale(.995)}
+
+  .slide::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:
+      linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:64px 64px;
+    -webkit-mask-image:radial-gradient(circle at 50% 45%,#000,transparent 78%);
+            mask-image:radial-gradient(circle at 50% 45%,#000,transparent 78%);
+  }
+  .slide > *{position:relative;z-index:1;max-width:1180px}
+
+  .kicker{
+    font-family:var(--mono);
+    font-size:clamp(11px,1.1vw,15px);
+    letter-spacing:.34em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin-bottom:26px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .kicker::before{content:"";width:34px;height:2px;background:var(--accent);display:inline-block;flex:none}
+
+  h1{font-size:clamp(40px,7.4vw,104px);line-height:.98;font-weight:800;letter-spacing:-.02em}
+  h2{font-size:clamp(30px,4.6vw,62px);line-height:1.02;font-weight:700;letter-spacing:-.015em}
+  h3{font-size:clamp(20px,2.3vw,30px);font-weight:600;line-height:1.2}
+  .lead{font-size:clamp(17px,2vw,27px);color:var(--ink-dim);line-height:1.5;font-weight:300;max-width:920px}
+  .big-lead{font-size:clamp(22px,3.1vw,44px);line-height:1.28;font-weight:400}
+  .hl{color:var(--accent);font-weight:700}
+  strong,b{font-weight:700;color:var(--ink)}
+  em{font-style:normal;color:var(--accent);font-weight:600}
+
+  .mt{margin-top:22px}
+  .mt-lg{margin-top:40px}
+
+  .stat-row{display:flex;flex-wrap:wrap;gap:min(4vw,54px);margin-top:46px}
+  .stat b{display:block;font-family:var(--mono);font-size:clamp(30px,4.4vw,58px);font-weight:700;color:var(--accent);line-height:1}
+  .stat span{display:block;margin-top:8px;color:var(--ink-dim);font-size:clamp(12px,1.2vw,15px);letter-spacing:.02em}
+
+  .grid{display:grid;gap:18px;margin-top:38px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+
+  .card{
+    border:1px solid var(--line);border-radius:18px;
+    padding:22px 22px 24px;
+    background:linear-gradient(180deg,rgba(13,13,24,.74),rgba(13,13,24,.56));
+    backdrop-filter:blur(4px);
+    transition:transform .25s ease,border-color .25s;
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--accent)}
+  .card h3{font-size:clamp(16px,1.5vw,21px);margin-bottom:7px}
+  .card p{color:var(--ink-dim);font-size:clamp(12.5px,1.15vw,15px);line-height:1.5}
+  .card .tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:9px}
+
+  .pill-row{display:flex;flex-wrap:wrap;gap:11px;margin-top:34px}
+  .pill{
+    border:1px solid var(--line);border-radius:999px;padding:10px 18px;
+    font-size:clamp(13px,1.3vw,16px);color:var(--ink);
+    background:rgba(255,255,255,.03);
+    display:flex;align-items:center;gap:9px;
+  }
+  .pill i{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;font-style:normal}
+
+  .logo{width:clamp(52px,6vw,78px);height:auto;margin-bottom:22px;filter:drop-shadow(0 6px 16px rgba(0,0,0,.5))}
+
+  /* Character showcase (slide 3) */
+  .cast-label{font-family:var(--mono);font-size:clamp(11px,1.15vw,13px);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:18px 0 10px}
+  .cast-label b{color:var(--accent)}
+  .char-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;max-width:none;width:100%}
+  .char{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,rgba(34,227,255,.10),rgba(255,255,255,.015));display:flex;flex-direction:column}
+  .char.v{background:linear-gradient(180deg,rgba(255,46,151,.12),rgba(255,255,255,.015));border-color:rgba(255,46,151,.28)}
+  .char img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain;object-position:center;background:#0b0b16;padding:10px 9px}
+  .char figcaption{text-align:center;font-size:clamp(11px,1.15vw,15px);padding:9px 3px;color:var(--ink);font-weight:600;letter-spacing:.02em}
+
+  /* Video slide */
+  .video-wrap{margin:6px auto 0;width:100%;max-width:1180px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#000;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+  .video-wrap video{display:block;width:100%;height:auto;max-height:72vh;background:#000}
+  .video-cap{margin-top:16px;color:var(--ink-dim);font-size:clamp(13px,1.4vw,18px)}
+
+  /* Jobs slide */
+  .job h3{font-size:clamp(19px,2vw,27px);margin:2px 0 10px;color:var(--ink)}
+  .job .job-role{color:var(--ink);font-size:clamp(13px,1.2vw,16px);line-height:1.5;margin-bottom:16px}
+  .job-qual .qual-h{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:9px}
+  .job-qual ul{margin:0 0 12px;padding:0}
+  .job-qual li{list-style:none;position:relative;padding-left:17px;color:var(--ink-dim);font-size:clamp(12px,1.12vw,15px);line-height:1.45;margin-bottom:7px}
+  .job-qual li:last-child{margin-bottom:0}
+  .job-qual li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:2px;background:var(--accent)}
+  .job-qual .bonus{color:var(--ink-faint);font-size:clamp(11.5px,1.05vw,14px);line-height:1.4}
+  .job-qual .bonus b{color:var(--accent);font-weight:600}
+  .job-contact{margin-top:26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .job-foot{color:var(--ink-dim);font-size:clamp(14px,1.5vw,19px)}
+  .fb-link{display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:600;font-size:clamp(13px,1.3vw,16px);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:9px 17px 9px 14px;transition:border-color .2s,background .2s}
+  .fb-link:hover{border-color:var(--accent);background:rgba(255,255,255,.10)}
+  .fb-link svg{width:18px;height:18px;flex:none}
+
+  .cta-box{
+    margin-top:40px;border:1px solid var(--accent);border-radius:20px;
+    padding:30px 34px;background:linear-gradient(120deg,rgba(34,227,255,.10),rgba(255,46,151,.06));
+    display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap;
+  }
+  .cta-box .q{font-size:clamp(20px,2.6vw,34px);font-weight:600;line-height:1.25}
+
+  .progress{position:fixed;top:0;left:0;width:100%;height:3px;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--cyan),var(--magenta));z-index:50;transition:transform .45s ease}
+  .counter{position:fixed;bottom:26px;right:34px;z-index:50;font-family:var(--mono);font-size:13px;color:var(--ink-faint);letter-spacing:.1em}
+  .counter b{color:var(--ink)}
+  .brandmark{position:fixed;bottom:26px;left:34px;z-index:50;font-family:var(--mono);font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-faint)}
+  .brandmark b{color:var(--accent)}
+
+  .hint{position:fixed;top:18px;right:28px;z-index:50;font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.06em;opacity:.85}
+  .hint kbd{border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink-dim);font-family:var(--mono)}
+
+  .langbtn{position:fixed;top:16px;left:28px;z-index:55;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--ink);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:7px 15px;cursor:pointer;text-transform:uppercase;transition:border-color .2s,background .2s,color .2s}
+  .langbtn:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,255,255,.10)}
+
+  .notes{
+    position:fixed;left:50%;bottom:64px;transform:translateX(-50%) translateY(20px);
+    width:min(880px,86vw);z-index:60;
+    background:rgba(10,10,20,.96);border:1px solid var(--accent);border-radius:14px;
+    padding:18px 24px;color:var(--ink-dim);font-size:15.5px;line-height:1.55;
+    box-shadow:0 20px 60px rgba(0,0,0,.6);
+    opacity:0;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s;
+  }
+  .notes.show{opacity:1;visibility:visible;transform:translateX(-50%)}
+  .notes b{color:var(--accent);font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:7px}
+
+  .nav-zone{position:fixed;top:0;bottom:0;width:16%;z-index:40;cursor:pointer}
+  .nav-zone.left{left:0}.nav-zone.right{right:0}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<button class="langbtn" id="langbtn" onclick="toggleLang()">EN</button>
+<div class="hint" data-k="hint">&larr; &rarr; เลื่อน &middot; <kbd>S</kbd> บทพูด &middot; <kbd>F</kbd> เต็มจอ</div>
+<div class="brandmark"><b>FORTAL</b> INTERACTIVE</div>
+<div class="counter"><b id="cur">1</b> / <span id="total">12</span></div>
+
+<div class="nav-zone left" onclick="prev()"></div>
+<div class="nav-zone right" onclick="next()"></div>
+
+<div class="deck" id="deck">
+
+  <!-- TITLE -->
+  <section class="slide" style="--accent:var(--cyan);--bg-img:url('assets/fortal/concept-art.jpg')">
+    <img class="logo" src="assets/fortal/icon.png" alt="Fortal Interactive" />
+    <div class="kicker">Company Information Session &middot; 2026</div>
+    <h1>Fortal<br><span class="hl">Interactive</span></h1>
+    <p class="lead mt-lg" data-k="s1l">เราสร้าง <em>เกมที่เอาร่างกายจริงของคุณ</em> ไปเล่นในโลกดิจิทัล<br>สนามจริง บวกเทคโนโลยี บวก IP ที่เราสร้างเอง</p>
+    <div class="pill-row">
+      <span class="pill"><i></i>Phygital Gaming Studio</span>
+      <span class="pill"><i></i>Mixed Reality</span>
+      <span class="pill"><i></i>LED Arena</span>
+    </div>
+    <div class="notes" data-note data-k="s1n"><b>บทพูด เปิด (~1 นาที)</b>
+      สวัสดีครับ เราคือ Fortal Interactive. สั้นๆ ก่อนว่าเราทำอะไร: เราสร้าง "เกมที่ใช้ร่างกายจริงเล่น" ไม่ใช่นั่งจับจอย แต่คุณวิ่ง เดิน กระโดด ในสนามจริง แล้วเทคโนโลยีทำให้สนามนั้นกลายเป็นเกม. วันนี้ผมจะพาดูว่าเราทำอะไร ใช้เทคอะไร และถ้าคุณมาร่วมทีม จะได้แตะงานแบบไหน.
+    </div>
+  </section>
+
+  <!-- BIG IDEA -->
+  <section class="slide" style="--accent:var(--lime);--bg-img:url('assets/mar/hero-art.jpg')">
+    <div class="kicker" data-k="s2k">สิ่งที่เราทำ</div>
+    <h2 data-k="s2h">เรารวม <span class="hl">โลกจริง</span> เข้ากับ <span class="hl">เกมดิจิทัล</span></h2>
+    <p class="big-lead mt-lg" data-k="s2bl">พื้น LED ที่คุณเหยียบแล้วเกิดเกม &middot; แว่น Mixed Reality ที่เปลี่ยนห้องเปล่าเป็นสนามรบ &middot; ระบบติดตามตัวคุณแม่นระดับเซนติเมตร</p>
+    <div class="stat-row">
+      <div class="stat"><b>5+</b><span data-k="s2s1">ผลิตภัณฑ์เกม</span></div>
+      <div class="stat"><b>20+</b><span data-k="s2s2">เกมในจักรวาลเดียว</span></div>
+      <div class="stat"><b>1</b><span data-k="s2s3">IP และจักรวาลของเราเอง</span></div>
+    </div>
+    <div class="notes" data-note data-k="s2n"><b>บทพูด (~1.5 นาที)</b>
+      หัวใจของเราคือคำว่า "Phygital" เท่ากับ Physical บวก Digital. เกมทั่วไปคุณอยู่หน้าจอ แต่ของเรา ตัวคุณคือคอนโทรลเลอร์ พื้นที่จริงคือแผนที่. เราไม่ได้ซื้อ IP คนอื่นมาทำ เราสร้างตัวละคร เรื่องราว อาร์ต และจักรวาลของเราเองทั้งหมด แล้วเอามันไปอยู่ในทุกสินค้า. เดี๋ยวผมจะไล่ให้ดูทีละตัว.
+    </div>
+  </section>
+
+  <!-- UNIVERSE / CHARACTERS -->
+  <section class="slide" style="--accent:var(--violet)">
+    <div class="kicker" data-k="s3k">Fortal Universe &middot; IP ของเรา</div>
+    <h2 data-k="s3h" style="font-size:clamp(26px,3.9vw,50px)">จักรวาลและตัวละครของเรา</h2>
+    <p class="lead" data-k="s3l" style="font-size:clamp(14px,1.55vw,20px);margin-top:12px">พากย์เต็มทั้ง <em>ภาษาไทยและอังกฤษ</em> มีมิโธโลยีเดียวเชื่อมทุกประสบการณ์เข้าหากัน</p>
+    <div class="cast-label" data-k="s3lh"><b>ฮีโร่ 7 ตัว</b></div>
+    <div class="char-grid">
+      <figure class="char"><img src="assets/characters/fortal.png" alt="Fortal" /><figcaption>Fortal</figcaption></figure>
+      <figure class="char"><img src="assets/characters/jade.png" alt="Jade" /><figcaption>Jade</figcaption></figure>
+      <figure class="char"><img src="assets/characters/violet.png" alt="Violet" /><figcaption>Violet</figcaption></figure>
+      <figure class="char"><img src="assets/characters/ruby.png" alt="Ruby" /><figcaption>Ruby</figcaption></figure>
+      <figure class="char"><img src="assets/characters/spark.png" alt="Spark" /><figcaption>Spark</figcaption></figure>
+      <figure class="char"><img src="assets/characters/titan.png" alt="Titan" /><figcaption>Titan</figcaption></figure>
+      <figure class="char"><img src="assets/characters/coral.png" alt="Coral" /><figcaption>Coral</figcaption></figure>
+    </div>
+    <div class="cast-label" data-k="s3lv"><b style="color:var(--magenta)">วายร้าย 3 ตัว</b></div>
+    <div class="char-grid vil">
+      <figure class="char v"><img src="assets/characters/glitch.png" alt="Glitch" /><figcaption>Glitch</figcaption></figure>
+      <figure class="char v"><img src="assets/characters/vortex.png" alt="Vortex" /><figcaption>Vortex</figcaption></figure>
+      <figure class="char v"><img src="assets/characters/shard.png" alt="Shard" /><figcaption>Shard</figcaption></figure>
+    </div>
+    <div class="notes" data-note data-k="s3n"><b>บทพูด (~1 นาที)</b>
+      นี่คือสิ่งที่ทำให้เราต่างจากคนทำเครื่องเล่นทั่วไป เรามี IP เป็นของตัวเอง. ฮีโร่ 7 ตัว วายร้าย 3 ตัว มีเรื่องราวเชื่อมกันหมด พากย์เสียงจริงทั้งไทยและอังกฤษ. งานตรงนี้เกี่ยวข้องกับทั้งทีมเขียนบท อาร์ต ดีไซน์ตัวละคร และ sound. ถ้าใครสายครีเอทีฟ นี่คือสนามของคุณ.
+    </div>
+  </section>
+
+  <!-- CASUAL LED -->
+  <section class="slide" style="--accent:var(--lime);--bg-img:url('assets/games/header_pic.jpg')">
+    <div class="kicker">Fortal Casual Game</div>
+    <div class="two-col" style="display:grid;grid-template-columns:1.05fr .95fr;gap:min(6vw,80px);align-items:center">
+      <div>
+        <h2 data-k="s4h">พื้น LED<br>ที่ร่างกายคือ<span class="hl"> ปุ่มกด</span></h2>
+        <p class="lead mt" data-k="s4l">เดิน วิ่ง กระทืบ บนพื้น LED ไม่มีจอย ไม่มีรีโมท<br>เกมสั้น เล่นง่าย เล่นได้หลายคนพร้อมกัน</p>
+        <div class="pill-row">
+          <span class="pill"><i></i>Color Hunter</span>
+          <span class="pill"><i></i>Lava Escape</span>
+          <span class="pill"><i></i>Memory Maze</span>
+          <span class="pill"><i></i>Light Step</span>
+        </div>
+      </div>
+      <div class="stat-row" style="flex-direction:column;gap:26px;margin-top:0">
+        <div class="stat"><b>3&times;6 m</b><span data-k="s4s1">พื้นสนาม LED</span></div>
+        <div class="stat"><b>200</b><span data-k="s4s2">ช่องที่เล่นได้</span></div>
+        <div class="stat"><b data-k="s4b3">~90 วิ</b><span data-k="s4s3">ต่อหนึ่งเกม</span></div>
+      </div>
+    </div>
+    <div class="notes" data-note data-k="s4n"><b>บทพูด (~1.5 นาที)</b>
+      ตัวแรกคือ Casual Game. พื้น LED ขนาด 3 คูณ 6 เมตร แบ่งเป็น 200 ช่อง ตัวคุณเหยียบตรงไหนคือปุ่มตรงนั้น. เล่นง่าย เกมละประมาณหนึ่งนาทีครึ่ง เล่นหลายคนได้ มีเกิน 20 เกม. นี่คือประตูทางเข้าที่คนทั่วไปเข้าถึงง่ายที่สุด เด็ก ผู้ใหญ่ ครอบครัว เล่นได้หมด.
+    </div>
+  </section>
+
+  <!-- GOO GOO CLASH -->
+  <section class="slide" style="--accent:var(--amber);--bg-img:url('assets/goo/hero-art.jpg')">
+    <div class="kicker">Goo Goo Clash</div>
+    <h2 data-k="s5h">แข่งวิ่งใน <span class="hl">Mixed Reality</span></h2>
+    <p class="lead mt" data-k="s5l">ใส่แว่น <strong>Meta Quest</strong> วิ่งในสนามจริง คุมตัวละครสไลม์ผลไม้ นำทัพมินเนี่ยน สูงสุด 4 คน พร้อมมุมมองผู้ชมสดๆ</p>
+    <div class="grid g4">
+      <div class="card"><span class="tag">Tech</span><h3>Colocation</h3><p data-k="s5c1p">ซิงค์ผู้เล่นหลายคนให้อยู่ในโลกเสมือนเดียวกันแบบเป๊ะๆ</p></div>
+      <div class="card"><span class="tag">Players</span><h3 data-k="s5c2h">สูงสุด 4 คน</h3><p data-k="s5c2p">แข่งกันในสนามจริง แบบเรียลไทม์</p></div>
+      <div class="card"><span class="tag">Cast</span><h3 data-k="s5c3h">12 ตระกูล</h3><p data-k="s5c3p">GooGoo Master 4 ภูมิภาค แดง เหลือง น้ำเงิน เขียว</p></div>
+      <div class="card"><span class="tag">View</span><h3 data-k="s5c4h">Spectator สด</h3><p data-k="s5c4p">คนดูเห็นเกมจากมุมกล้องแบบถ่ายทอดสด</p></div>
+    </div>
+    <div class="notes" data-note data-k="s5n"><b>บทพูด (~1.5 นาที)</b>
+      ตัวที่สองคือ Goo Goo Clash. อันนี้ขยับขึ้นมาเป็น Mixed Reality. ใส่แว่น Meta Quest แล้ววิ่งในสนามจริง 4 คน. คีย์เทคคือ "Colocation" ทำให้ทุกคนที่ใส่แว่นเห็นสิ่งเดียวกัน อยู่พิกัดเดียวกันเป๊ะ ซึ่งเป็นโจทย์วิศวกรรมที่ยากมาก. แล้วคนดูก็เห็นเกมสดๆ ด้วย เหมือนดูอีสปอร์ต.
+    </div>
+  </section>
+
+  <!-- UNDYING SQUAD -->
+  <section class="slide" style="--accent:var(--magenta);--bg-img:url('assets/undying/hero-art.jpg')">
+    <div class="kicker">Undying Squad</div>
+    <div class="two-col" style="display:grid;grid-template-columns:1.05fr .95fr;gap:min(6vw,80px);align-items:center">
+      <div>
+        <h2 data-k="s6h">Co-op Survivor<br><span class="hl">Shooter</span> ใน MR</h2>
+        <p class="lead mt" data-k="s6l">1 ถึง 4 คน เดินในพื้นที่จริง ยิงสู้ศัตรูเป็นระลอก<br>สายเอาตัวรอด roguelike อาร์ตแบบ voxel</p>
+      </div>
+      <ul class="list" style="margin-top:0;display:flex;flex-direction:column;gap:16px">
+        <li data-k="s6li1"><b>Gun mount</b> ฐานยึดปืนของจริง</li>
+        <li data-k="s6li2"><b>VR Bow</b> ธนูที่รู้สึกเหมือนน้าวจริง</li>
+        <li data-k="s6li3"><b>Haptic suit</b> ชุดที่สั่นตามการโดนโจมตี</li>
+        <li data-k="s6li4"><b>Roguelike</b> เก่งขึ้นทุกรอบ ไม่ซ้ำเดิม</li>
+      </ul>
+    </div>
+    <div class="notes" data-note data-k="s6n"><b>บทพูด (~1.5 นาที)</b>
+      ตัวที่สามคือ Undying Squad. เป็นเกมยิงเอาตัวรอดแบบร่วมมือ 1 ถึง 4 คน. จุดที่น่าสนใจสำหรับสายฮาร์ดแวร์คือ gear เฉพาะ ทั้งฐานยึดปืน ธนู VR และชุด haptic ที่สั่นตอนโดนยิง. นี่คืองานที่ software กับ hardware ต้องคุยกัน. อาร์ตเป็น voxel เท่ๆ เล่นแบบ roguelike ทุกรอบไม่เหมือนเดิม.
+    </div>
+  </section>
+
+  <!-- TEAM BOSS FIGHT -->
+  <section class="slide" style="--accent:var(--cyan);--bg-img:url('assets/tbf/hero-art.jpg')">
+    <div class="kicker">Team Boss Fight</div>
+    <h2 data-k="s7h">3 คน ล้มมังกร <span class="hl">Thyrenos</span></h2>
+    <p class="lead mt" data-k="s7l">บอสแบทเทิล MR 30 นาที บนจอ LED โค้ง <strong>17 เมตร</strong> พร้อมโซนพื้นอินเทอร์แอ็กทีฟ</p>
+    <div class="grid g3">
+      <div class="card"><span class="tag">Role</span><h3>&#9876;&#65039; Warrior</h3><p data-k="s7c1p">แทงค์ รับดาเมจ ยืนหน้า คุมบอส</p></div>
+      <div class="card"><span class="tag">Role</span><h3>&#10024; Magic Caster</h3><p data-k="s7c2p">ซัพพอร์ต บวกดาเมจเวท ควบคุมจังหวะ</p></div>
+      <div class="card"><span class="tag">Role</span><h3>&#127919; Ranger</h3><p data-k="s7c3p">ยิงแม่น จัดการจุดอ่อนของบอส</p></div>
+    </div>
+    <div class="notes" data-note data-k="s7n"><b>บทพูด (~1.5 นาที)</b>
+      ตัวที่สี่คือ Team Boss Fight. อันนี้เน้นทีมเวิร์ก 3 คน ต่อสู้กับมังกร Thyrenos เซสชันละ 30 นาที. มี 3 บทบาท คือ แทงค์ สายเวท สายยิง ต้องเล่นประสานกัน. ฉากหลังเป็นจอ LED โค้งยาว 17 เมตร บวกพื้นที่โต้ตอบได้. นี่คือระดับโปรดักชันใหญ่ ทั้งภาพ เสียง และ game design.
+    </div>
+  </section>
+
+  <!-- MAIN ARENA + FITNESS -->
+  <section class="slide" style="--accent:var(--lime);--bg-img:url('assets/mar/fbg-all.jpg')">
+    <div class="kicker">Main Arena &amp; Competition</div>
+    <h2 data-k="s8h">สนามใหญ่ และ<br>ระบบ <span class="hl">แข่งขันจริงจัง</span></h2>
+    <div class="grid g2 mt-">
+      <div class="card"><span class="tag">Main Arena</span><h3 data-k="s8c1h">พื้น LED ต่อผนัง LED ไร้รอยต่อ</h3><p data-k="s8c1p">ติดตามตัวด้วย UWB แม่นระดับเซนติเมตร &middot; เกมใหม่ Paint Storm, Star Fighter &middot; e-sport 3v3 "Fortal Battle Ground"</p></div>
+      <div class="card"><span class="tag">Fitness</span><h3 data-k="s8c2h">วัดผล 13 ตัวชี้วัด &middot; 3 สาย</h3><p data-k="s8c2p">Vanguard (พลัง ความเร็ว) &middot; Striker (ความแม่น) &middot; Commander (การตัดสินใจ) &middot; ลีดเดอร์บอร์ดตามฤดูกาล มุ่งสู่ "Phygital Olympic"</p></div>
+    </div>
+    <div class="notes" data-note data-k="s8n"><b>บทพูด (~1.5 นาที)</b>
+      ตัวที่ห้าคือ Main Arena. เป็นสเกลใหญ่สุด พื้น LED ต่อกับผนัง LED แบบไร้รอยต่อ ใช้ระบบ UWB จับตำแหน่งตัวผู้เล่นแม่นระดับเซนติเมตร. เรากำลังทำให้มันเป็นอีสปอร์ต 3 ต่อ 3. และมีระบบวัดสมรรถภาพ 13 ตัวชี้วัด แบ่ง 3 สาย มีลีดเดอร์บอร์ด. เป้าหมายไกลคือ "Phygital Olympic" การแข่งกีฬาแบบใหม่ที่ผสมจริงกับดิจิทัล.
+    </div>
+  </section>
+
+  <!-- FORTALOS -->
+  <section class="slide" style="--accent:var(--violet);--bg-img:url('assets/FortalOS/hero-art.jpg')">
+    <div class="kicker" data-k="s9k">อนาคต &middot; FortalOS</div>
+    <h2 data-k="s9h">วันที่ <span class="hl">ทุกคน</span><br>สร้างเกมของตัวเองได้</h2>
+    <p class="big-lead mt-lg" data-k="s9bl">พูดบอก AI ว่าอยากได้เกมแบบไหน แล้วมันสร้างให้ ทดสอบบนซิมูเลเตอร์ที่บ้าน จากนั้นกดปล่อยลงฮาร์ดแวร์ Arena จริง</p>
+    <p class="lead mt" data-k="s9l">เปลี่ยนคนเล่นให้เป็นคนสร้าง เปิดทางให้ทุกคนทำเกมได้ บนโครงสร้างระดับมืออาชีพของ Fortal</p>
+    <div class="notes" data-note data-k="s9n"><b>บทพูด (~1 นาที)</b>
+      และนี่คือที่เรากำลังมุ่งไป FortalOS. จินตนาการว่าคุณแค่พูดกับ AI ว่าอยากได้เกมแบบไหน มันสร้างให้ ลองเล่นบนซิมที่บ้าน แล้วกดปล่อยลงสนามจริงได้เลย. เราอยากเปลี่ยนคนเล่นให้เป็นคนสร้าง. นี่คือวิสัยทัศน์ที่ทีมเรากำลังบุกเบิก ถ้าคุณสนใจ AI บวกเกม นี่คือของจริง.
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section class="slide" style="--accent:var(--cyan)">
+    <div class="kicker" data-k="s10k">มาทำงานที่นี่ &middot; คุณจะได้แตะเทคอะไร</div>
+    <h2 data-k="s10h">เทคโนโลยีที่เรา<span class="hl">สร้างจริง ทุกวัน</span></h2>
+    <div class="grid g3 mt-">
+      <div class="card"><span class="tag">Engine</span><h3>Unity / Game Dev</h3><p data-k="s10c1p">ออกแบบและสร้างเกมตั้งแต่ต้นจนจบ</p></div>
+      <div class="card"><span class="tag">XR</span><h3>Mixed Reality</h3><p>Meta Quest, passthrough, Colocation</p></div>
+      <div class="card"><span class="tag">Tracking</span><h3>UWB Positioning</h3><p data-k="s10c3p">จับตำแหน่งตัวคนแม่นระดับเซนติเมตร</p></div>
+      <div class="card"><span class="tag">Hardware</span><h3>LED &amp; Interactive Floor</h3><p data-k="s10c4p">พื้นและผนัง LED, haptic, gear เฉพาะ</p></div>
+      <div class="card"><span class="tag">AI</span><h3>AI Game Generation</h3><p data-k="s10c5p">สร้างเกมด้วยภาษาธรรมชาติ (FortalOS)</p></div>
+      <div class="card"><span class="tag">Creative</span><h3>Art &middot; Story &middot; Sound</h3><p data-k="s10c6p">IP, ตัวละคร, พากย์ 2 ภาษา, 3D และ voxel</p></div>
+    </div>
+    <div class="notes" data-note data-k="s10n"><b>บทพูด (~1.5 ถึง 2 นาที) สำคัญกับนักศึกษา</b>
+      ทีนี้ส่วนที่เกี่ยวกับพวกคุณโดยตรง. มาทำงานที่นี่ คุณจะได้แตะของพวกนี้ของจริง ไม่ใช่โปรเจกต์เล่นๆ. Unity และ game dev เต็มรูปแบบ, Mixed Reality บน Meta Quest, ระบบ tracking UWB, งานฮาร์ดแวร์ LED กับ haptic, AI สร้างเกม, และงานครีเอทีฟทั้งอาร์ต บท เสียง. ไม่ว่าคุณจะสายโค้ด สายอาร์ต หรือสายฮาร์ดแวร์ เรามีที่ให้.
+    </div>
+  </section>
+
+  <!-- WHY JOIN -->
+  <section class="slide" style="--accent:var(--magenta);--bg-img:url('assets/goo/track-prc-01.jpg')">
+    <div class="kicker" data-k="s11k">ทำไมต้องเรา</div>
+    <h2 data-k="s11h">ที่นี่คุณได้ทำของที่<br><span class="hl">ยังไม่มีใครทำ</span></h2>
+    <ul class="list" style="margin-top:30px;display:flex;flex-direction:column;gap:16px">
+      <li data-k="s11li1"><b>งานที่จับต้องได้</b> คนเดินเข้ามาเล่นสิ่งที่คุณสร้าง เห็นหน้าเขาสนุกตรงหน้า</li>
+      <li data-k="s11li2"><b>ข้ามศาสตร์</b> เกม ฮาร์ดแวร์ XR และ AI อยู่ในทีมเดียว ได้เรียนรู้กว้าง</li>
+      <li data-k="s11li3"><b>IP ของเราเอง</b> สร้างจักรวาลตั้งแต่ศูนย์ ไม่ใช่รับจ้างทำตามสั่ง</li>
+      <li data-k="s11li4"><b>เทคโนโลยีขอบสุด</b> Colocation, UWB, MR, generative AI ในงานจริง</li>
+    </ul>
+    <div class="notes" data-note data-k="s11n"><b>บทพูด (~1.5 นาที)</b>
+      สรุปว่าทำไมถึงน่ามาอยู่กับเรา. หนึ่ง งานคุณจับต้องได้ คนเดินเข้ามาเล่นแล้วสนุกต่อหน้าคุณเลย ไม่ใช่โค้ดที่หายเข้าไปในเซิร์ฟเวอร์. สอง ได้ทำงานข้ามศาสตร์ เกม ฮาร์ดแวร์ XR AI อยู่ด้วยกัน. สาม เป็น IP ของเราเอง คุณได้สร้างจริง ไม่ใช่รับจ้าง. สี่ เทคโนโลยีที่ล้ำจริงๆ ไม่ใช่ของเล่น.
+    </div>
+  </section>
+
+  <!-- GOOGOO EVENT VIDEO -->
+  <section class="slide" style="--accent:var(--amber)">
+    <div class="kicker" data-k="svk">Goo Goo Clash &middot; คลิปงานจริง</div>
+    <div class="video-wrap">
+      <video src="assets/video/googoo-event.mp4" autoplay muted loop playsinline controls preload="metadata"></video>
+    </div>
+    <p class="video-cap" data-k="svc">บรรยากาศจริงตอนคนลงไปเล่นในสนาม นี่คือสิ่งที่เราสร้าง</p>
+    <div class="notes" data-note data-k="svn"><b>บทพูด (~1 นาที)</b>
+      เปิดคลิปให้ดูบรรยากาศจริงตอนคนลงไปเล่น. กดที่คลิปเพื่อเปิดเสียงได้. ปล่อยให้ภาพเล่าเรื่องสักครู่ แล้วค่อยไปต่อเรื่องตำแหน่งที่เราเปิดรับ.
+    </div>
+  </section>
+
+  <!-- OPEN POSITIONS -->
+  <section class="slide" style="--accent:var(--cyan);--bg-img:url('assets/fitness/hero-art.jpg')">
+    <div class="kicker" data-k="sjk">ฝึกงานกับเรา &middot; ตำแหน่งที่เปิดรับ</div>
+    <h2 data-k="sjh">ตอนนี้เรารับ <span class="hl">นักศึกษาฝึกงาน 2 สาย</span></h2>
+    <div class="grid g2">
+      <div class="card job">
+        <span class="tag">Test &amp; Quality</span>
+        <h3>QA / Tester</h3>
+        <p class="job-role" data-k="sj1r">ทดสอบเกม โปรแกรม และฮาร์ดแวร์ (manual &amp; exploratory) เขียน bug report ที่ทำซ้ำได้ และออกแบบ test case ให้ครอบคลุม</p>
+        <div class="job-qual" data-k="sj1q">
+          <span class="qual-h">คุณสมบัติ</span>
+          <ul>
+            <li>เข้าใจพื้นฐานการทดสอบซอฟต์แวร์ รู้จัก test case และ bug report</li>
+            <li>ช่างสังเกต ละเอียด อธิบายปัญหาให้คนอื่นทำตามซ้ำได้</li>
+            <li>สื่อสารกับทีมพัฒนารู้เรื่อง ทำงานเป็นทีมได้</li>
+          </ul>
+          <p class="bonus"><b>ถ้ามีจะดีมาก:</b> automated test, Git หรือเครื่องมือ track bug</p>
+        </div>
+      </div>
+      <div class="card job">
+        <span class="tag">AI &amp; Automation</span>
+        <h3>AI Engineering</h3>
+        <p class="job-role" data-k="sj2r">ศึกษา ค้นคว้า และพัฒนาเครื่องมือด้วย AI ประยุกต์ใช้ AI ช่วยงานทดสอบและกระบวนการพัฒนาเกม</p>
+        <div class="job-qual" data-k="sj2q">
+          <span class="qual-h">คุณสมบัติ</span>
+          <ul>
+            <li>มีพื้นฐานการเขียนโปรแกรม (เช่น Python, C# ภาษาใดก็ได้)</li>
+            <li>เข้าใจพื้นฐาน Machine Learning / LLM ว่าทำงานยังไง</li>
+            <li>ใช้ Claude, ChatGPT, Gemini เป็น เขียน prompt ให้ได้ผลลัพธ์ดี</li>
+          </ul>
+          <p class="bonus"><b>ถ้ามีจะดีมาก:</b> เคยทำโปรเจกต์กับ AI API หรืองาน automation</p>
+        </div>
+      </div>
+    </div>
+    <div class="job-contact">
+      <span class="job-foot" data-k="sjf">สนใจฝึกงานกับเรา? ส่งพอร์ต/เรซูเม่ หรือทักมาหาเราได้เลย</span>
+      <a class="fb-link" href="https://www.facebook.com/p/Fortal-Interactive-61574180041887/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="#1877F2" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+        Fortal Interactive
+      </a>
+    </div>
+    <div class="notes" data-note data-k="sjn"><b>บทพูด ปิด (~1.5 นาที)</b>
+      ปิดท้ายด้วยตำแหน่งฝึกงานที่เราเปิดรับตอนนี้ 2 สาย. หนึ่ง QA/Tester สายทดสอบเกม โปรแกรม ฮาร์ดแวร์ เขียน bug report ออกแบบ test case ถ้าทำ automated test หรือใช้ Git เป็นยิ่งดี. สอง AI Engineering เอา AI มาช่วยงานทดสอบและพัฒนาเกม ขอมีพื้นฐานเขียนโปรแกรมและเข้าใจ LLM. สนใจก็ทักมาที่ Facebook เพจ Fortal Interactive ได้เลยครับ ขอบคุณครับ.
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ---------- English translations (Thai stays inline as the default) ----------
+  const EN = {
+    hint: `&larr; &rarr; Move &middot; <kbd>S</kbd> Notes &middot; <kbd>F</kbd> Fullscreen`,
+    s1l: `We build <em>games your real body plays</em> inside a digital world<br>Physical space, plus technology, plus IP we create ourselves`,
+    s1n: `<b>Opening (~1 min)</b> Hi, we're Fortal Interactive. The quick version of what we do: we build games you play with your real body. No controller, no sitting still, you run, walk and jump in a real space while technology turns that space into a game. Today I'll show you what we make, the tech we use, and what you'd get to work on if you joined us.`,
+    s2k: `What We Do`,
+    s2h: `We merge <span class="hl">the real world</span> with <span class="hl">digital games</span>`,
+    s2bl: `An LED floor that turns your steps into a game &middot; Mixed Reality headsets that turn an empty room into a battlefield &middot; tracking that follows you to the centimeter`,
+    s2s1: `game products`,
+    s2s2: `games in one universe`,
+    s2s3: `our own IP &amp; universe`,
+    s2n: `<b>(~1.5 min)</b> Our core idea is "Phygital" = Physical plus Digital. In a normal game you're stuck at a screen. With ours, you are the controller and the real space is the map. We didn't buy anyone's IP; we create the characters, the story, the art and the whole universe ourselves, then put it into every product. Let me walk you through them.`,
+    s3k: `Fortal Universe &middot; Our IP`,
+    s3h: `Our Universe &amp; Characters`,
+    s3l: `Fully voiced in <em>Thai and English</em>, one mythology tying every experience together`,
+    s3lh: `<b>7 Heroes</b>`,
+    s3lv: `<b style="color:var(--magenta)">3 Villains</b>`,
+    s3n: `<b>(~1 min)</b> This is what sets us apart from ordinary arcade makers: we own our IP. Seven heroes, three villains, all connected by one story, fully voiced in Thai and English. This work touches writing, art, character design and sound. If you're a creative, this is your arena.`,
+    s4h: `An LED Floor<br>Where Your Body Is<span class="hl"> the Controller</span>`,
+    s4l: `Walk, run, stomp on an LED floor. No joystick, no remote.<br>Short, easy games, many players at once`,
+    s4s1: `LED play field`,
+    s4s2: `playable cells`,
+    s4s3: `per game`,
+    s4b3: `~90 sec`,
+    s4n: `<b>(~1.5 min)</b> First up, Casual Game. An LED floor, 3 by 6 meters, split into 200 cells; wherever you step is the button. Easy to play, about a minute and a half per game, many players at once, over 20 games. It's the easiest entry point for anyone, kids, adults, whole families.`,
+    s5h: `Racing in <span class="hl">Mixed Reality</span>`,
+    s5l: `Put on a <strong>Meta Quest</strong>, run in a real arena, control fruit-slime characters leading minion trails. Up to 4 players, with a live spectator view`,
+    s5c1p: `Syncs many players into the exact same virtual world, pixel-perfect`,
+    s5c2h: `Up to 4 players`,
+    s5c2p: `Head-to-head in a real arena, in real time`,
+    s5c3h: `12 families`,
+    s5c3p: `GooGoo Masters across 4 regions, Red, Yellow, Blue, Green`,
+    s5c4h: `Live spectator`,
+    s5c4p: `The crowd watches from a broadcast-style camera`,
+    s5n: `<b>(~1.5 min)</b> Second, Goo Goo Clash. This steps up to Mixed Reality. Put on a Meta Quest and race in a real arena, four players. The key tech is "Colocation", making everyone in a headset see the exact same thing in the exact same position, which is a hard engineering problem. And the audience watches live, like an e-sport.`,
+    s6h: `Co-op Survivor<br><span class="hl">Shooter</span> in MR`,
+    s6l: `1 to 4 players move through real space, fighting waves of enemies<br>Survivor roguelike, voxel art style`,
+    s6li1: `<b>Gun mount</b> a real gun rig`,
+    s6li2: `<b>VR Bow</b> a bow that feels truly drawn`,
+    s6li3: `<b>Haptic suit</b> buzzes when you take a hit`,
+    s6li4: `<b>Roguelike</b> stronger every run, never the same`,
+    s6n: `<b>(~1.5 min)</b> Third, Undying Squad. A co-op survival shooter for 1 to 4 players. What's interesting for hardware folks is the custom gear: a real gun rig, a VR bow, and a haptic suit that buzzes when you get hit. This is where software and hardware have to talk. Voxel art, roguelike runs that are never the same.`,
+    s7h: `3 Players Slay the Dragon <span class="hl">Thyrenos</span>`,
+    s7l: `A 30-minute MR boss battle on a <strong>17-meter</strong> curved LED wall, with interactive floor zones`,
+    s7c1p: `Tank, soaks the damage, holds the front, controls the boss`,
+    s7c2p: `Support plus burst damage, controls the tempo`,
+    s7c3p: `Precision shots, targets the boss's weak points`,
+    s7n: `<b>(~1.5 min)</b> Fourth, Team Boss Fight. This one's about teamwork, three players against the dragon Thyrenos, 30 minutes a session. Three roles, tank, caster and shooter, that have to sync up. The backdrop is a 17-meter curved LED wall plus an interactive floor. This is big-production level, visuals, audio and game design.`,
+    s8h: `A Bigger Arena and<br>a <span class="hl">Serious Competition</span> System`,
+    s8c1h: `Seamless LED floor into LED wall`,
+    s8c1p: `UWB tracking to the centimeter &middot; new games Paint Storm, Star Fighter &middot; 3v3 e-sport "Fortal Battle Ground"`,
+    s8c2h: `13 metrics measured &middot; 3 tracks`,
+    s8c2p: `Vanguard (power, speed) &middot; Striker (precision) &middot; Commander (decision-making) &middot; seasonal leaderboards toward a "Phygital Olympic"`,
+    s8n: `<b>(~1.5 min)</b> Fifth, Main Arena. The biggest scale, an LED floor seamlessly joined to an LED wall, using UWB to track players to the centimeter. We're turning it into a 3v3 e-sport. And there's a fitness system, 13 metrics across 3 tracks, with leaderboards. The long-term goal is a "Phygital Olympic", a new kind of sport blending real and digital.`,
+    s9k: `The Future &middot; FortalOS`,
+    s9h: `The Day <span class="hl">Everyone</span><br>Can Build Their Own Game`,
+    s9bl: `Tell an AI what game you want and it builds it, test it on a home simulator, then push it live to real Arena hardware`,
+    s9l: `Turning players into creators, opening game-making to everyone, on Fortal's professional-grade infrastructure`,
+    s9n: `<b>(~1 min)</b> And here's where we're headed, FortalOS. Imagine just telling an AI the game you want, it builds it, you test on a home simulator, then push it live to the real arena. We want to turn players into creators. This is the frontier our team is exploring. If you're into AI plus games, this is the real deal.`,
+    s10k: `Work Here &middot; The Tech You'll Touch`,
+    s10h: `Technology We <span class="hl">Actually Build, Every Day</span>`,
+    s10c1p: `Design and build games end to end`,
+    s10c3p: `Track people to the centimeter`,
+    s10c4p: `LED floors and walls, haptics, custom gear`,
+    s10c5p: `Build games with natural language (FortalOS)`,
+    s10c6p: `IP, characters, bilingual voice, 3D and voxel`,
+    s10n: `<b>(~1.5 to 2 min) important for students</b> Now the part that's about you directly. Work here and you touch all of this for real, not toy projects. Full Unity and game dev, Mixed Reality on Meta Quest, UWB tracking, LED and haptic hardware, AI game generation, and creative work across art, writing and sound. Code, art or hardware, there's a seat for you.`,
+    s11k: `Why Us`,
+    s11h: `Here You Build What<br><span class="hl">No One Else Has</span>`,
+    s11li1: `<b>Tangible work</b> people walk in and play what you built, the joy is right in front of you`,
+    s11li2: `<b>Cross-disciplinary</b> games, hardware, XR and AI on one team, you learn broadly`,
+    s11li3: `<b>Our own IP</b> build a universe from zero, not work-for-hire`,
+    s11li4: `<b>Cutting-edge tech</b> Colocation, UWB, MR, generative AI in real production`,
+    s11n: `<b>(~1.5 min)</b> So, why us. One, your work is tangible, people walk up and enjoy it right in front of you, not code lost in a server. Two, cross-disciplinary, games, hardware, XR and AI together. Three, our own IP, you build for real, not work-for-hire. Four, genuinely cutting-edge tech, not toys.`,
+    svk: `Goo Goo Clash &middot; Live Event`,
+    svc: `The real energy when people step onto the field. This is what we build.`,
+    svn: `<b>(~1 min)</b> Play the clip to show the real energy when people get on the field. Tap the video to turn on sound. Let the footage talk for a moment, then move on to the roles we're hiring for.`,
+    sjk: `Internships &middot; Open Tracks`,
+    sjh: `We're Looking for <span class="hl">2 Intern Tracks</span>`,
+    sj1r: `Test games, software and hardware (manual &amp; exploratory), write reproducible bug reports, and design thorough test cases`,
+    sj1q: `<span class="qual-h">Qualifications</span><ul><li>Understand software-testing basics, familiar with test cases and bug reports</li><li>Observant and detail-oriented, can explain issues so others can reproduce them</li><li>Communicate well with the dev team and work as part of a team</li></ul><p class="bonus"><b>Nice to have:</b> automated testing, Git, or bug-tracking tools</p>`,
+    sj2r: `Research and build tools with AI, and apply AI to testing and the game-dev process`,
+    sj2q: `<span class="qual-h">Qualifications</span><ul><li>Programming fundamentals (Python, C#, or any language)</li><li>Understand how Machine Learning / LLMs work at a basic level</li><li>Fluent with Claude, ChatGPT, Gemini and can write effective prompts</li></ul><p class="bonus"><b>Nice to have:</b> experience with AI APIs or automation projects</p>`,
+    sjf: `Want to intern with us? Send your portfolio / resume, or reach out to us`,
+    sjn: `<b>Closing (~1.5 min)</b> Close with the two intern tracks we're looking for. One, QA/Tester, testing games, software and hardware, writing reproducible bug reports and designing test cases; automated testing or Git is a plus. Two, AI Engineering, using AI to help testing and game development; we want programming basics and an understanding of LLMs. If you're interested, reach out to us on Facebook, Fortal Interactive. Thank you.`
+  };
+
+  const TH = {};
+  document.querySelectorAll('[data-k]').forEach(el => { TH[el.dataset.k] = el.innerHTML; });
+  let lang = 'th';
+  function applyLang(){
+    document.querySelectorAll('[data-k]').forEach(el => {
+      const k = el.dataset.k;
+      const src = (lang === 'en' && EN[k] != null) ? EN[k] : TH[k];
+      if (src != null) el.innerHTML = src;
+    });
+    document.getElementById('langbtn').textContent = (lang === 'th') ? 'EN' : 'ไทย';
+    document.documentElement.lang = lang;
+  }
+  function toggleLang(){ lang = (lang === 'th') ? 'en' : 'th'; applyLang(); }
+
+  // ---------- Deck navigation ----------
+  const deck = document.getElementById('deck');
+  const slides = [...deck.querySelectorAll('.slide')];
+  const N = slides.length;
+  let i = 0, notesOn = false;
+  document.getElementById('total').textContent = N;
+
+  function render(){
+    slides.forEach((s,k)=>{ s.classList.toggle('active',k===i); s.classList.toggle('prev',k<i); });
+    document.getElementById('cur').textContent = i+1;
+    document.getElementById('progress').style.transform = 'scaleX('+((i+1)/N)+')';
+    document.querySelectorAll('.notes').forEach(n=>n.classList.remove('show'));
+    if(notesOn){ const n = slides[i].querySelector('[data-note]'); if(n) n.classList.add('show'); }
+    document.querySelectorAll('video').forEach(v=>{
+      if(slides[i].contains(v)){ v.play().catch(()=>{}); } else { try{ v.pause(); }catch(e){} }
+    });
+  }
+  function next(){ if(i<N-1){i++;render();} }
+  function prev(){ if(i>0){i--;render();} }
+  function toggleNotes(){ notesOn=!notesOn; render(); }
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')  {e.preventDefault();next();}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp')             {e.preventDefault();prev();}
+    else if(e.key==='Home'){i=0;render();}
+    else if(e.key==='End'){i=N-1;render();}
+    else if(e.key.toLowerCase()==='s'){toggleNotes();}
+    else if(e.key.toLowerCase()==='l'){toggleLang();}
+    else if(e.key.toLowerCase()==='f'){
+      if(!document.fullscreenElement)document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+  let x0=null;
+  addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
+  addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50){dx<0?next():prev();}x0=null;},{passive:true});
+
+  render();
+</script>
+</body>
+</html>
