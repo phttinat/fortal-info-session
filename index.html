@@ -143,9 +143,9 @@
   .job-qual .bonus b{color:var(--accent);font-weight:600}
   .job-contact{margin-top:26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
   .job-foot{color:var(--ink-dim);font-size:clamp(14px,1.5vw,19px)}
-  .fb-link{display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:600;font-size:clamp(13px,1.3vw,16px);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:9px 17px 9px 14px;transition:border-color .2s,background .2s}
-  .fb-link:hover{border-color:var(--accent);background:rgba(255,255,255,.10)}
-  .fb-link svg{width:18px;height:18px;flex:none}
+  .contact-link{display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:600;font-size:clamp(13px,1.3vw,16px);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:9px 17px 9px 14px;transition:border-color .2s,background .2s}
+  .contact-link:hover{border-color:var(--accent);background:rgba(255,255,255,.10);color:var(--ink)}
+  .contact-link svg{width:18px;height:18px;flex:none}
 
   .cta-box{
     margin-top:40px;border:1px solid var(--accent);border-radius:20px;
@@ -431,7 +431,11 @@
     </div>
     <div class="job-contact">
       <span class="job-foot" data-k="sjf">สนใจฝึกงานกับเรา? ส่งพอร์ต/เรซูเม่ หรือทักมาหาเราได้เลย</span>
-      <a class="fb-link" href="https://www.facebook.com/p/Fortal-Interactive-61574180041887/" target="_blank" rel="noopener">
+      <a class="contact-link" href="mailto:connect@fortalinter.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+        connect@fortalinter.com
+      </a>
+      <a class="contact-link" href="https://www.facebook.com/p/Fortal-Interactive-61574180041887/" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="#1877F2" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
         Fortal Interactive
       </a>
